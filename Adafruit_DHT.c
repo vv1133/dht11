@@ -24,7 +24,7 @@
 #include <bcm2835.h>
 #include <unistd.h>
 
-#define MAXTIMINGS 100
+#define MAXTIMINGS 84
 
 //#define DEBUG
 
@@ -64,9 +64,11 @@ int main(int argc, char **argv)
 #ifdef DEBUG
   printf("Using pin #%d\n", dhtpin);
 #endif
-  int times = 100;
+  int times = 5;
+  int status = 0;
   while (times--) {
-	if (readDHT(type, dhtpin) == 0)
+	status = readDHT(type, dhtpin);
+	if (status == 0)
 		return 0;
   }
   
@@ -106,11 +108,11 @@ int readDHT(int type, int pin) {
     while ( bcm2835_gpio_lev(pin) == laststate) {
 	counter++;
 	//nanosleep(1);		// overclocking might change this?
-        if (counter == 1000)
-	  break;
+        if (counter == 1000) {
+	  return -1;
+	}
     }
     laststate = bcm2835_gpio_lev(pin);
-    if (counter == 1000) break;
 #ifdef DEBUG
     bits[bitidx++] = counter;
 #endif

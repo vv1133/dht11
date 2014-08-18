@@ -1,4 +1,5 @@
 #!/bin/bash
 
-sudo ./Adafruit_DHT 11 4
+dir=`dirname $0`
+sudo $dir/Adafruit_DHT 11 4
 
